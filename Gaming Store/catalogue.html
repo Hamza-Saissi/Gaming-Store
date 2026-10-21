@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="fr" data-bs-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gaming Store - Catalogue</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+--dark_color: #19283f;
+--green_color: #33d1cc;
+}
+body {
+font-family: "Roboto", sans-serif;
+}
+.navbar {
+background-color: var(--dark_color);
+}
+.navbar .navbar-nav .nav-link {
+color: white;
+}
+.navbar .navbar-nav .nav-link.active,
+.navbar .navbar-nav .nav-link:hover {
+color: var(--green_color);
+}
+.btn-main {
+background-color: var(--green_color);
+color: var(--dark_color);
+font-weight: 700;
+border: none;
+}
+.btn-main:hover {
+background-color: blanchedalmond;
+color: black;
+}
+.card-product {
+transition: transform 0.2s;
+cursor: pointer;
+}
+.card-product:hover {
+transform: translateY(-5px);
+}
+.card-product img {
+height: 200px;
+object-fit: cover;
+}
+footer {
+background-color: var(--dark_color);
+color: white;
+}
+</style>
+<script>
+const themeSauvegarde = localStorage.getItem('theme_gaming') || 'light';
+document.documentElement.setAttribute('data-bs-theme', themeSauvegarde);
+</script>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg sticky-top">
+<div class="container">
+<a class="navbar-brand text-white fw-bold d-flex align-items-center gap-2" href="index.html">
+<i class="fa-solid fa-gamepad fa-lg" style="color: var(--green_color);"></i>
+<span>GAMING STORE</span>
+</a>
+<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+<i class="fa-solid fa-bars text-white"></i>
+</button>
+<div class="collapse navbar-collapse" id="mainNav">
+<ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+<li class="nav-item"><a class="nav-link" href="index.html">Accueil</a></li>
+<li class="nav-item"><a class="nav-link active" href="catalogue.html">Catalogue</a></li>
+<li class="nav-item"><a class="nav-link" href="annonce.html?id=1">Annonce</a></li>
+</ul>
+<button class="btn btn-outline-light rounded-pill me-2" onclick="changerTheme()" id="btn-theme">
+<i class="fa-solid fa-moon"></i>
+</button>
+</div>
+</div>
+</nav>
+<div class="container py-5">
+<h2 class="fw-bold mb-4">Catalogue des Produits</h2>
+<div class="row g-3 mb-4">
+<div class="col-md-6">
+<div class="btn-group flex-wrap" role="group">
+<button type="button" class="btn btn-outline-secondary" onclick="filtrer('tous')">Tous</button>
+<button type="button" class="btn btn-outline-secondary" onclick="filtrer('PC Bureau')">PC Bureau</button>
+<button type="button" class="btn btn-outline-secondary" onclick="filtrer('Laptop')">Laptops</button>
+<button type="button" class="btn btn-outline-secondary" onclick="filtrer('Carte Graphique')">Cartes Graphiques</button>
+</div>
+</div>
+<div class="col-md-6">
+<input type="text" id="input-recherche" class="form-control" placeholder="Rechercher un produit..." oninput="rechercherProduit()">
+</div>
+</div>
+<div class="row g-4" id="grille-catalogue"></div>
+</div>
+<footer class="py-4 mt-5">
+<div class="container text-center">
+<p class="mb-1 fw-bold"><i class="fa-solid fa-gamepad me-2" style="color: var(--green_color);"></i>GAMING STORE</p>
+<p class="small text-white-50 mb-0">Projet Web Frontend - Pages Séparées</p>
+</div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+const produits = [
+{ id: 1, nom: "PC Gamer RTX 4070 Super", categorie: "PC Bureau", prix: 16500, image: "https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=600&q=80", desc: "PC Gamer ultra rapide pour jouer en 1440p et 4K.", specs: ["Intel Core i7-13700K", "NVIDIA RTX 4070 Super 12Go", "32Go RAM DDR5", "SSD NVMe 1To"] },
+{ id: 2, nom: "PC Gamer Ryzen 5 RX 7600", categorie: "PC Bureau", prix: 9800, image: "https://images.unsplash.com/photo-1593640408182-31c70c8268f5?auto=format&fit=crop&w=600&q=80", desc: "Excellent rapport qualité/prix pour le gaming Full HD.", specs: ["AMD Ryzen 5 7600", "Radeon RX 7600 8Go", "16Go RAM DDR5", "SSD NVMe 1To"] },
+{ id: 3, nom: "ASUS ROG Strix G16", categorie: "Laptop", prix: 18900, image: "https://images.unsplash.com/photo-1603302576837-37561b2e2302?auto=format&fit=crop&w=600&q=80", desc: "PC portable gaming puissant avec écran 165Hz.", specs: ["Intel Core i7-13650HX", "NVIDIA RTX 4060 8Go", "16Go RAM", "Écran 16 pouces FHD+ 165Hz"] },
+{ id: 4, nom: "MSI Katana 15", categorie: "Laptop", prix: 12500, image: "https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?auto=format&fit=crop&w=600&q=80", desc: "Laptop gaming polyvalent pour études et jeux.", specs: ["Intel Core i5-12450H", "NVIDIA RTX 4050 6Go", "16Go RAM", "SSD 512Go"] },
+{ id: 5, nom: "MSI GeForce RTX 4080 Super", categorie: "Carte Graphique", prix: 13200, image: "https://images.unsplash.com/photo-1591488320449-011701bb6704?auto=format&fit=crop&w=600&q=80", desc: "Carte graphique haut de gamme avec refroidissement triple ventilateur.", specs: ["16Go GDDR6X", "DLSS 3.5 & Ray Tracing", "3x DisplayPort, 1x HDMI", "Consommation 320W"] },
+{ id: 6, nom: "Gigabyte RTX 4060 Ti 8Go", categorie: "Carte Graphique", prix: 4800, image: "https://inmedia.ma/wp-content/uploads/2025/02/asus-dual-geforce-rtx-4060-ti-oc-face.webp", desc: "Idéale pour faire tourner tous les jeux récents en Ultra 1080p.", specs: ["8Go GDDR6", "Architecture Ada Lovelace", "Double ventilateur Windforce", "PCIe 4.0"] }
+];
+function initialiserBoutonTheme() {
+const themeActuel = document.documentElement.getAttribute('data-bs-theme');
+const btn = document.getElementById('btn-theme');
+if (themeActuel === 'dark') {
+btn.innerHTML = '<i class="fa-solid fa-sun"></i>';
+} else {
+btn.innerHTML = '<i class="fa-solid fa-moon"></i>';
+}
+}
+function changerTheme() {
+const html = document.documentElement;
+let nouveauTheme = html.getAttribute('data-bs-theme') === 'dark' ? 'light' : 'dark';
+html.setAttribute('data-bs-theme', nouveauTheme);
+localStorage.setItem('theme_gaming', nouveauTheme);
+initialiserBoutonTheme();
+}
+function afficherProduits(liste) {
+document.getElementById('grille-catalogue').innerHTML = liste.map(p => `
+<div class="col-md-4">
+<div class="card h-100 shadow-sm card-product" onclick="window.location.href='annonce.html?id=${p.id}'">
+<img src="${p.image}" class="card-img-top" alt="${p.nom}">
+<div class="card-body d-flex flex-column">
+<span class="badge bg-secondary align-self-start mb-2">${p.categorie}</span>
+<h5 class="card-title fw-bold">${p.nom}</h5>
+<p class="card-text text-muted small flex-grow-1">${p.desc}</p>
+<div class="d-flex justify-content-between align-items-center mt-3">
+<span class="fw-bold fs-5">${p.prix} DH</span>
+<a href="annonce.html?id=${p.id}" class="btn btn-main btn-sm rounded-pill px-3">Voir l'annonce</a>
+</div>
+</div>
+</div>
+</div>`).join('');
+}
+function filtrer(cat) {
+const liste = cat === 'tous' ? produits : produits.filter(p => p.categorie === cat);
+afficherProduits(liste);
+}
+function rechercherProduit() {
+const texte = document.getElementById('input-recherche').value.toLowerCase();
+const liste = produits.filter(p => p.nom.toLowerCase().includes(texte) || p.categorie.toLowerCase().includes(texte));
+afficherProduits(liste);
+}
+initialiserBoutonTheme();
+afficherProduits(produits);
+</script>
+</body>
+</html>
